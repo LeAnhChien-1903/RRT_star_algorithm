@@ -48,14 +48,23 @@ class RRT_star:
                             aroundPoints.append(tempPoint)
                             distanceY, _ = self.dist_and_angle(y, tempPoint)
                             distanceArray.append(distanceY)
-        distanceArrayNumpy = np.array(distanceArray)
-        if distanceArrayNumpy.size == 0:
+        if len(distanceArray)==0:
             return x
         else:
-            minDistance = distanceArrayNumpy.min()
-            index = [idx for idx, val in enumerate(distanceArrayNumpy) if val == minDistance]
-            return aroundPoints[index[0]]
+            minDistance = min(distanceArray)
+            index = distanceArray.index(minDistance)
+            return aroundPoints[index]
+    
+    # Return nearest neighbor of a point
+    def Nearest(self, G, x):
+        distanceArray = []
+        for i in range(len(G[0])):
+            distance = self.dist_and_angle(G[0][i], x)
+            distanceArray.append(distance)
+        minDistance = min(distanceArray)
+        index = distanceArray.index(minDistance)
 
+        return G[0][index]
 
 def main():
     imagePath = "world2.png"

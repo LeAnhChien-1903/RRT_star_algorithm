@@ -1,3 +1,5 @@
+from copyreg import dispatch_table
+from dis import dis
 import cv2
 import numpy as np
 import os
@@ -48,16 +50,28 @@ class RRT_star:
                             aroundPoints.append(tempPoint)
                             distanceY, _ = self.dist_and_angle(y, tempPoint)
                             distanceArray.append(distanceY)
-        distanceArrayNumpy = np.array(distanceArray)
-        if distanceArrayNumpy.size == 0:
+        if len(distanceArray)==0:
             return x
         else:
-            minDistance = distanceArrayNumpy.min()
-            index = [idx for idx, val in enumerate(distanceArrayNumpy) if val == minDistance]
-            return aroundPoints[index[0]]
+            minDistance = min(distanceArray)
+            index = distanceArray.index(minDistance)
+            return aroundPoints[index]
+    
+    # Return nearest neighbor of a point
+    def Nearest(self, G, x):
+        distanceArray = []
+        for i in range(len(G[0])):
+            distance = self.dist_and_angle(G[0][i], x)
+            distanceArray.append(distance)
+        minDistance = min(distanceArray)
+        index = distanceArray.index(minDistance)
 
+        return G[0][index]
+    # Return a set V' of vertices such V' is subset of V
+    def Near(self, G, x, n):
+        pass
 imagePath = "world2.png"
 image = cv2.imread(imagePath)  
     
-RRT_star_obj = RRT_star(image, 10) 
+RRT_star_obj = RRT_star(image, 5) 
 print(RRT_star_obj.Steer((50, 50), (20, 20)))
